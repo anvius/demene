@@ -62,13 +62,14 @@
     {
         $sections = explode('/lista', $url['url']);
         $pages_urls = [];
-        for($i = 1; $i < $url['pages']; $i++) {
+        for ($i = 1; $i < $url['pages']; $i++) {
             $pages_urls[] = $sections[0] . '/' . $i . '/lista' . $sections[1];
         }
         return($pages_urls);
     }
 
-    function convertDate($month, $year) {
+    function convertDate($month, $year)
+    {
         $meses = [
             'enero',
             'febrero',
@@ -84,7 +85,7 @@
             'diciembre'
         ];
         $mes = 1;
-        foreach($meses as $number => $name) {
+        foreach ($meses as $number => $name) {
             if ($month == $name) {
                 $mes = $number;
                 break;
@@ -93,7 +94,8 @@
         return(mktime(0, 0, 0, $mes, 1, $year));
     }
 
-    function normalizeCurrency($symbol) {
+    function normalizeCurrency($symbol)
+    {
         $currencies = [
             'EUR' => [
                 'eur',
@@ -113,8 +115,8 @@
             ]
         ];
         $result = 'NULL';
-        foreach($currencies as $key => $variations) {
-            if(in_array($symbol,$variations)) {
+        foreach ($currencies as $key => $variations) {
+            if (in_array($symbol, $variations)) {
                 $result = $key;
                 break;
             }
@@ -122,7 +124,7 @@
         return($result);
     }
 
-    if($argc != 2) {
+    if ($argc != 2) {
         echo("Falta parámetro de fichero. Uso:\nphp demene.php <fichero_csv>\n");
         die();
     }
@@ -135,12 +137,12 @@
 
     $domains = [];
 
-    foreach($urls as $url) {
+    foreach ($urls as $url) {
         echo("Revisando...\n\tAño:" . $url['year'] . "\n\tPáginas: " . $url['pages'] . "\n");
         $pages = getDomainPages($url);
         $contador_paginas = 0;
-        if($url['year'] > 2010) {
-            foreach($pages as $page) {
+        if ($url['year'] > 2010) {
+            foreach ($pages as $page) {
                 $doms = getDomainsInfo(file_get_contents($page), $url['year']);
                 echo("\t\tPágina " . ++$contador_paginas . ". Dominios encontrados: " . count($doms) . "\n");
                 $domains = array_merge($domains, $doms);
@@ -148,21 +150,22 @@
         }
     }
 
-    function filterRepeted($e) {
+    function filterRepeted($e)
+    {
         static $dominios_revisados = [];
         $hash = $e['dominio'] . $e['precio'];
-        if(!in_array($hash, $dominios_revisados)) {
+        if (!in_array($hash, $dominios_revisados)) {
             $dominios_revisados[] = $hash;
-            return(TRUE);
+            return(true);
         }
-        return(FALSE);
+        return(false);
     }
 
     //$domains = array_map('filterRepeted', $domains);
 
     $content_to_save = "DOMINIO,KEYWORD,EXTENSION,PRECIO,MONEDA,FECHA,ETIQUETAS,MERCADO ESPAÑOL\n";
 
-    foreach($domains as $domain) {
+    foreach ($domains as $domain) {
         $moneda = normalizeCurrency($domain['moneda']);
         $content_to_save .=
             $domain['dominio'] . ',' .
@@ -171,7 +174,7 @@
             $domain['precio'] . ',' .
             $moneda . ',' .
             convertDate($domain['mes'], $domain['año']) . ',' .
-            str_replace(['-', '/','_'],';', $domain['plataforma']) . ',' .
+            str_replace(['-', '/','_'], ';', $domain['plataforma']) . ',' .
             ($domain['spanish'] ? 1 : 0) . "\n";
     }
 
