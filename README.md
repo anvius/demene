@@ -20,7 +20,7 @@ $> cd demene
 
 Ahora ya se puede ejecutar
 ```bash
-$> php demene.php [ > fichero.csv]
+$> php demene.php fichero.csv
 ```
 donde fichero.csv es el nombre del fichero que queremos darle a donde se guardan los datos.
 
@@ -36,8 +36,7 @@ $> mv demene.php demene
 ```
 Con esto podemos ejecutar directamente:
 ```bash
-$> demene [ > fichero_csv]
+$> demene fichero_csv
 ```
-> Nota: Los corchetes no hay que ponerlos, es para indicar que lo que hay en su interior es opcional.
 
 [1]: http://www.demene.com
